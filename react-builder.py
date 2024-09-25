@@ -1,5 +1,7 @@
 import os
 import subprocess
+import webbrowser
+import time
 
 def run_command(command):
     """Run a shell command and wait for it to complete."""
@@ -16,7 +18,7 @@ def create_react_app(project_name):
 
     # Step 3: Install required packages
     print("Installing dependencies...")
-    run_command("npm install react-icons react-redux @reduxjs/toolkit tailwindcss postcss autoprefixer")
+    run_command("npm install react-icons react-redux @reduxjs/toolkit tailwindcss postcss autoprefixer react-router-dom react-spinners")
 
     # Step 4: Initialize Tailwind CSS
     run_command("npx tailwindcss init -p")
@@ -71,12 +73,23 @@ export default defineConfig({
 
     # Rewrite App.jsx
     app_jsx_content = """\
+import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom'
+import MainLayout from './layouts/MainLayout'
+import NotFoundPage from './pages/NotFoundPage';
+import HomePage from './pages/HomePage';
+
 function App() {
-  return (
-    <>
-      App Here
-    </>
-  )
+
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path='/' element={<MainLayout />} >
+        <Route index element={<HomePage />} />
+        <Route path='*' element={<NotFoundPage />} />
+      </Route>
+    )
+  );
+
+  return <RouterProvider router={router} />;
 }
 
 export default App
@@ -154,12 +167,126 @@ createRoot(document.getElementById('root')).render(
     print("Updated index.html")
 
     # Step 12: Update README.md
-    readme_content = f"# {project_name}\n"
+    readme_content = "# Project name\n"
     with open("README.md", "w") as readme_file:
         readme_file.write(readme_content)
-    print(f"Updated README.md to contain '# {project_name}'")
+    print("Updated README.md to contain '# Project name'")
 
+    # Step 13: Create pages directory and HomePage.jsx and NotFoundPage.jsx
+    os.makedirs("src/pages", exist_ok=True)
+
+    home_page_content = """\
+const HomePage = () => {
+  return (
+    <>
+      HomePage
+    </>
+  )
+}
+
+export default HomePage
+"""
+    with open("src/pages/HomePage.jsx", "w") as home_file:
+        home_file.write(home_page_content)
+    print("Created src/pages/HomePage.jsx")
+
+    not_found_page_content = """\
+import { Link } from 'react-router-dom'
+
+const NotFoundPage = () => {
+    return (
+        <section className='text-center flex flex-col justify-center items-center h-96'>
+            <h1 className='text-6xl font-bold mb-4'>404 Not Found</h1>
+            <p className='text-xl mb-5'>This page does not exist</p>
+            <Link
+                to='/'
+                className='text-white bg-orange-400 hover:bg-orange-500 rounded-full px-3 py-3 mt-4'
+            >
+                Go Back
+            </Link>
+        </section>
+    )
+}
+
+export default NotFoundPage
+"""
+    with open("src/pages/NotFoundPage.jsx", "w") as not_found_file:
+        not_found_file.write(not_found_page_content)
+    print("Created src/pages/NotFoundPage.jsx")
+
+    # Step 14: Create layouts directory and MainLayout.jsx
+    os.makedirs("src/layouts", exist_ok=True)
+
+    main_layout_content = """\
+import React from 'react'
+import Navbar from '../components/Navbar'
+import { Outlet } from 'react-router-dom';
+import Footer from '../components/Footer';
+
+const MainLayout = () => {
+  return (
+    <>
+      <Navbar />
+      <Outlet />
+      <Footer />
+    </>
+  );
+};
+export default MainLayout;
+"""
+    with open("src/layouts/MainLayout.jsx", "w") as main_layout_file:
+        main_layout_file.write(main_layout_content)
+    print("Created src/layouts/MainLayout.jsx")
+
+    # Step 15: Create components directory and Navbar and Footer components
+    os.makedirs("src/components", exist_ok=True)
+
+    navbar_content = """\
+function Navbar() {
+  return (
+    <nav>
+      navbar
+    </nav>
+  );
+}
+
+export default Navbar;
+"""
+    with open("src/components/Navbar.jsx", "w") as navbar_file:
+        navbar_file.write(navbar_content)
+    print("Created src/components/Navbar.jsx")
+
+    footer_content = """\
+function Footer() {
+  return (
+    <footer>
+      footer
+    </footer>
+  );
+}
+
+export default Footer;
+"""
+    with open("src/components/Footer.jsx", "w") as footer_file:
+        footer_file.write(footer_content)
+    print("Created src/components/Footer.jsx")
+
+    # Step 16: Delete react.svg from src/assets
+    react_svg_path = "src/assets/react.svg"
+    if os.path.exists(react_svg_path):
+        os.remove(react_svg_path)
+        print("Removed src/assets/react.svg")
+
+    # Final message
     print("React app setup complete!")
+    
+    # Step 17: Run the development server
+    print("Starting the development server...")
+    subprocess.Popen("npm run dev", shell=True)
+    time.sleep(1)
+    
+    # Step 18: Open the default web browser to the localhost URL
+    webbrowser.open("http://localhost:3000/")
 
 if __name__ == "__main__":
     project_name = input("Enter your project name: ")
