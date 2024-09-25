@@ -2,11 +2,13 @@ import os
 import subprocess
 import webbrowser
 import time
+import json
 
 def run_command(command):
     """Run a shell command and wait for it to complete."""
     process = subprocess.run(command, shell=True, check=True)
     return process.returncode
+
 
 def create_react_app(project_name):
     # Step 1: Create Vite React app
@@ -19,6 +21,7 @@ def create_react_app(project_name):
     # Step 3: Install required packages
     print("Installing dependencies...")
     run_command("npm install react-icons react-redux @reduxjs/toolkit tailwindcss postcss autoprefixer react-router-dom react-spinners")
+    run_command("npm install --save-dev jest @testing-library/react @testing-library/jest-dom redux-mock-store redux-thunk axios-mock-adapter babel-jest @babel/preset-env @babel/preset-react jest-fetch-mock")
 
     # Step 4: Initialize Tailwind CSS
     run_command("npx tailwindcss init -p")
@@ -277,15 +280,38 @@ export default Footer;
         os.remove(react_svg_path)
         print("Removed src/assets/react.svg")
 
+    # Step 17: Create .babelrc
+    store_js_content = """\
+{
+  "presets": [
+    "@babel/preset-env",
+    "@babel/preset-react"
+  ]
+}
+"""
+    with open("src/.babelrc", "w") as store_file:
+        store_file.write(store_js_content)
+    print("Created src/.babelrc")
+
+    # Step 18: Add test script to package.json
+    with open("package.json", "r") as package_file:
+        package_json = json.load(package_file)
+
+    package_json['scripts']['test'] = 'jest'
+
+    with open("package.json", "w") as package_file:
+        json.dump(package_json, package_file, indent=2)
+    print("Updated package.json to include the test script.")
+
     # Final message
     print("React app setup complete!")
-    
-    # Step 17: Run the development server
+
+    # Step 19: Run the development server
     print("Starting the development server...")
     subprocess.Popen("npm run dev", shell=True)
     time.sleep(1)
-    
-    # Step 18: Open the default web browser to the localhost URL
+
+    # Step 20: Open the default web browser to the localhost URL
     webbrowser.open("http://localhost:3000/")
 
 if __name__ == "__main__":
