@@ -2,5 +2,3 @@
 Script that builds React w/ Vite, Redux, Tailwind CSS, and React Icons.
 
 Cleans up all boilerplate code from package install.
-
-Eventually will include react-router-dom in the process.
