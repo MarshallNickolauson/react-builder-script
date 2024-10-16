@@ -20,7 +20,7 @@ def create_react_app(project_name):
 
     # Step 3: Install required packages
     print("Installing dependencies...")
-    run_command("npm install react-icons react-redux @reduxjs/toolkit tailwindcss postcss autoprefixer react-router-dom react-spinners")
+    run_command("npm install react-icons react-redux @reduxjs/toolkit tailwindcss postcss autoprefixer react-router-dom react-spinners react-toastify axios")
     run_command("npm install --save-dev jest @testing-library/react @testing-library/jest-dom redux-mock-store redux-thunk axios-mock-adapter babel-jest @babel/preset-env @babel/preset-react jest-fetch-mock")
 
     # Step 4: Initialize Tailwind CSS
@@ -220,6 +220,9 @@ export default NotFoundPage
     # Step 14: Create layouts directory and MainLayout.jsx
     os.makedirs("src/layouts", exist_ok=True)
 
+    # Step 14b: Create features folder for redux
+    os.makedirs("src/features", exist_ok=True)
+
     main_layout_content = """\
 import React from 'react'
 import Navbar from '../components/Navbar'
@@ -317,3 +320,6 @@ export default Footer;
 if __name__ == "__main__":
     project_name = input("Enter your project name: ")
     create_react_app(project_name)
+
+
+# npm install --save-dev jest @testing-library/react @testing-library/jest-dom redux-mock-store redux-thunk axios-mock-adapter babel-jest @babel/preset-env @babel/preset-react jest-fetch-mock
